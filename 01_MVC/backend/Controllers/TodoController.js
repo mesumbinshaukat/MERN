@@ -1,7 +1,15 @@
+const {createTodo} = require("../Models/todo")
+
 // METHOD: GET
 // URL: http://localhost:5000/todo/
 const getTodos = async (req, res) => {
-    return res.send("Todos")
+    try{
+        const getTodo = await createTodo.find()
+        return res.status("203").send({"Data":getTodo})
+    }catch(error){
+        console.log(`Error: ${error}`)
+        return res.status("400").send({"Error": error})
+    }
 }
 
 // METHOD: POST
@@ -15,10 +23,23 @@ const postTodo = async (req, res) => {
         return res.status(400).send("Please fill in all fields")
 }
 
-return  res.status("201").send({
-    "data":req.body,
-    "message": "Todo Added Successfully"
-})
+    const newTodo = await createTodo.create({
+        title:  title,
+        description: description,
+        todo: todo
+    })
+
+    if(!newTodo){
+        return res.status(400).send("Failed to create new todo")
+    }else{
+        console.log(newTodo)
+        return res.send(newTodo)
+    }
+
+// return  res.status("201").send({
+//     "data":req.body,
+//     "message": "Todo Added Successfully"
+// })
 
     } catch (error) {
         console.log(`Error Message: ${error}`)
